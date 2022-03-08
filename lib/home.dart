@@ -49,6 +49,7 @@ class _HomeState extends State<Home> {
             Column(
               children: [
                 Container(
+                  width: 300,
                   child: TextField(
                     style: TextStyle(
                       color: Colors.white,
@@ -56,7 +57,8 @@ class _HomeState extends State<Home> {
                     ),
                     decoration: InputDecoration(
                       hintText: "Search the Another Location...",
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 16.0)
+                      hintStyle: TextStyle(color: Colors.white, fontSize: 16.0),
+                      prefixIcon: Icon(Icons.search, color: Colors.white,)
                     ),
                   ),
                 )
