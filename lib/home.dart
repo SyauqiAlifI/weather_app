@@ -21,6 +21,10 @@ class _HomeState extends State<Home> {
   String weather = 'clear';
   String abbreviation = '';
 
+  var minTemperature = List.filled(7, 0);
+  var maxTemperature = List.filled(7, 0);
+  var abbreviationForecast = List.filled(7, '');
+
   String searchApiUrl =
       'https://www.metaweather.com/api/location/search/?query=';
 
@@ -45,7 +49,7 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchLocation() async {
     var locationResult =
-        await http.get(Uri.parse(locationApiUrl + woeId.toString()));
+    await http.get(Uri.parse(locationApiUrl + woeId.toString()));
     var result = json.decode(locationResult.body);
     var consolidated_weather = result['consolidated_weather'];
     var data = consolidated_weather[0];
@@ -68,6 +72,11 @@ class _HomeState extends State<Home> {
               .toString()));
 
       var result = json.decode(locationDayResult.body);
+      setState(() {
+        minTemperature[i] = result['min_temp'];
+        maxTemperature[i] = result['max_temp'];
+        abbreviationForecast[i] = result['weather_state_abbr'];
+      });
     }
   }
 
@@ -84,76 +93,76 @@ class _HomeState extends State<Home> {
               image: AssetImage("images/$weather.png"), fit: BoxFit.cover)),
       child: temperature == null
           ? const Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Center(
-                        child: Image.network(
-                          'https://www.metaweather.com/static/img/weather/png/$abbreviation.png',
-                          width: 100,
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          temperature.toString() + 'ºC',
-                          style: const TextStyle(
-                            fontSize: 60,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          location,
-                          style: const TextStyle(
-                              fontSize: 40, color: Colors.white),
-                        ),
-                      )
-                    ],
+        backgroundColor: Colors.transparent,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Center(
+                  child: Image.network(
+                    'https://www.metaweather.com/static/img/weather/png/$abbreviation.png',
+                    width: 100,
                   ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child: TextField(
-                          onSubmitted: (String input) {
-                            onTextFieldSubmitted(input);
-                          },
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                          ),
-                          decoration: const InputDecoration(
-                              hintText: "Search the Another Location...",
-                              hintStyle: TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.white,
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          errorMessage,
-                          style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: Platform.isAndroid ? 15.0 : 20.0),
-                        ),
-                      ),
-                    ],
+                ),
+                Center(
+                  child: Text(
+                    temperature.toString() + 'ºC',
+                    style: const TextStyle(
+                      fontSize: 60,
+                      color: Colors.white,
+                    ),
                   ),
-                ],
-              ),
+                ),
+                Center(
+                  child: Text(
+                    location,
+                    style: const TextStyle(
+                        fontSize: 40, color: Colors.white),
+                  ),
+                )
+              ],
             ),
+            Column(
+              children: [
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    onSubmitted: (String input) {
+                      onTextFieldSubmitted(input);
+                    },
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 25.0,
+                    ),
+                    decoration: const InputDecoration(
+                        hintText: "Search the Another Location...",
+                        hintStyle: TextStyle(
+                            color: Colors.white, fontSize: 16.0),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: Platform.isAndroid ? 15.0 : 20.0),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
