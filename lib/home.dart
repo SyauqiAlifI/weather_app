@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -10,6 +13,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int temperature = 0;
   String location = 'Jakarta';
+  int woeId = 1047378;
+
+  String searchApiUrl = 'https://www.metaweather.com/api/location/search/?query=';
+
+  void fetchSearch(String input) async {
+    var searchResult = await http.get(Uri.parse(searchApiUrl + input));
+    var result = json.decode(searchResult.body)[0];
+
+    setState(() {
+      location = result['title'];
+      woeId = result['woeId'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
