@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,7 +14,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage("images/clear.png"),
               fit: BoxFit.cover
@@ -32,7 +30,7 @@ class _HomeState extends State<Home> {
               children: [
                 Center(
                   child: Text(temperature.toString() + 'ºC',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 60,
                       color: Colors.white,
                     ),
@@ -41,7 +39,7 @@ class _HomeState extends State<Home> {
                 Center(
                   child: Text(
                     location,
-                    style: TextStyle(fontSize: 40, color: Colors.white),
+                    style: const TextStyle(fontSize: 40, color: Colors.white),
                   ),
                 )
               ],
@@ -50,7 +48,7 @@ class _HomeState extends State<Home> {
               children: [
                 Container(
                   width: 300,
-                  child: TextField(
+                  child: const TextField(
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 25.0,
