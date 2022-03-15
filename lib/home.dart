@@ -23,10 +23,9 @@ class _HomeState extends State<Home> {
 
   var minTemperature = List.filled(7, 0);
   var maxTemperature = List.filled(7, 0);
-  var abbreviationForecast = List.filled(7, '');
+  var abbreviationForecast = List.filled(7, 'c');
 
-  String searchApiUrl =
-      'https://www.metaweather.com/api/location/search/?query=';
+  String searchApiUrl = 'https://www.metaweather.com/api/location/search/?query=';
 
   String locationApiUrl = 'https://www.metaweather.com/api/location/';
 
@@ -72,17 +71,20 @@ class _HomeState extends State<Home> {
               .toString()));
 
       var result = json.decode(locationDayResult.body);
+      var data = result[0];
+
       setState(() {
-        minTemperature[i] = result['min_temp'];
-        maxTemperature[i] = result['max_temp'];
+        minTemperature[i] = result['min_temp'].round();
+        maxTemperature[i] = result['max_temp'].round();
         abbreviationForecast[i] = result['weather_state_abbr'];
       });
     }
   }
 
-  void onTextFieldSubmitted(String input) {
+  void onTextFieldSubmitted(String input) async {
     fetchSearch(input);
     fetchLocation();
+    fetchLocationDay();
   }
 
   @override
@@ -127,6 +129,12 @@ class _HomeState extends State<Home> {
                 )
               ],
             ),
+            Row(
+              children: [
+                forecastElement(1, abbreviationForecast[1], maxTemperature[1], minTemperature[1]),
+                forecastElement(2, abbreviationForecast[2], maxTemperature[2], minTemperature[2])
+              ],
+            ),
             Column(
               children: [
                 SizedBox(
@@ -167,7 +175,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-Widget forecastElement(daysFromNow) {
+Widget forecastElement(daysFromNow, abbreviation, maxTemperature, minTemperature) {
   var now = DateTime.now();
   var oneDayFromNow = now.add(Duration(days: daysFromNow));
 
@@ -176,7 +184,27 @@ Widget forecastElement(daysFromNow) {
         color: Color.fromRGBO(205, 212, 228, 0.2),
         borderRadius: BorderRadius.circular(10)),
     child: Column(
-      children: [],
+      children: [
+        Text(DateFormat.E().format(oneDayFromNow),
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        Text(DateFormat.MMMd().format(oneDayFromNow),
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 16, bottom: 16),
+          child: Image.network(
+            'https://www.metaweather.com/static/img/weather/png/$abbreviation.png',
+            width: 50,
+          ),
+        ),
+        Text('High :' + maxTemperature.toString() + 'ºC',
+            style: const TextStyle(fontSize: 20,color: Colors.white),
+        ),
+        Text('Low :' + minTemperature.toString() + 'ºC',
+            style: const TextStyle(fontSize: 20,color: Colors.white),
+        ),
+      ],
     ),
   );
 }
